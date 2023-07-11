@@ -26,19 +26,20 @@ class PageControllerExtension extends Extension
     public function onAfterInit()
     {
         // Sentry
+        $dsn = SentryAdaptor::get_opts();
+        if (!$dsn['dsn']) {
+            return;
+        }
         $appData = $this->getAppdata();
         $cache = Injector::inst()->get(CacheInterface::class . '.sentryconf');
         if ($appData['commit'] !== self::SLW_NOOP && !$cache->has($appData['commit'])) {
-            $dsn = SentryAdaptor::get_opts();
-            if ($dsn['dsn']) {
-                $version = $this->getVersion($appData);
-                $data = [
-                    'DSN'     => $dsn['dsn'],
-                    'VERSION' => $version
-                ];
-                $rendered = $this->renderJS($data);
-                $cache->set($appData['commit'], $rendered);
-            }
+            $version = $this->getVersion($appData);
+            $data = [
+                'DSN'     => $dsn['dsn'],
+                'VERSION' => $version
+            ];
+            $rendered = $this->renderJS($data);
+            $cache->set($appData['commit'], $rendered);
         } else {
             $rendered = $cache->get($appData['commit']);
         }
