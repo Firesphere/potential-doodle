@@ -1,0 +1,28 @@
+{
+    "name": "pikselin/module-helpers",
+    "description": "A set of helpers for Sentry in JS etc.",
+    "minimum-stability": "stable",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "simonerkelens",
+            "email": "simon@pikselin.com"
+        }
+    ],
+    "require": {
+        "silverstripe/framework": "^4|^5",
+        "phptek/sentry": "^4|^5",
+        "jonom/silverstripe-betternavigator": "^5|^6",
+        "jonom/silverstripe-environment-awareness": "^2"
+    },
+    "extra": {
+        "expose": [
+            "dist"
+        ]
+    },
+    "autoload": {
+        "psr-4": {
+            "Pikselin\\ModuleHelpers\\": "src"
+        }
+    }
+}
