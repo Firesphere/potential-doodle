@@ -60,7 +60,8 @@ class PageControllerExtension extends Extension
      */
     private function renderJS($data)
     {
-        $file = ModuleResourceLoader::singleton()->resolvePath("pikselin/module-helpers:templates/sentryconf.js");
+        $file = ModuleResourceLoader::singleton()
+            ->resolvePath("pikselin/module-helpers:templates/sentryconf.js");
         $absolutePath = Director::getAbsFile($file);
         if (!file_exists($absolutePath ?? '')) {
             throw new \InvalidArgumentException("Javascript template file {$file} does not exist");
@@ -116,6 +117,6 @@ class PageControllerExtension extends Extension
         }
 
         // Return a format like modulehelper@1.0.0+commithash
-        return sprintf('%s@%s+%s', $appData['project'][1] ?? $appData['project'][0], trim($version), $appData['commit']);
+        return sprintf('%s@%s (%s)', $appData['project'][1] ?? $appData['project'][0], trim($version), $appData['commit']);
     }
 }
