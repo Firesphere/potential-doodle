@@ -3,3 +3,5 @@ SilverStripe\Core\Injector\Injector:
     factory: SilverStripe\Core\Cache\CacheFactory
     constructor:
       namespace: "sentryconf"
+      defaultLifetime: 2678400
+#     Roughly a month of cache time, a flush would refresh it, which is done on a deploy, anyways
