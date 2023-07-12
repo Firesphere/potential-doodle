@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "silverstripe/framework": "^4|^5",
+        "silverstripe/recipe-cms": "^4|^5",
         "phptek/sentry": "^4|^5",
         "jonom/silverstripe-betternavigator": "^5|^6",
         "jonom/silverstripe-environment-awareness": "^2"
