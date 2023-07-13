@@ -3,8 +3,10 @@
 namespace Pikselin\ModuleHelpers\Extensions;
 
 use Composer\InstalledVersions;
+use JonoM\EnvironmentAwareness\EnvironmentAwareness;
 use PageController;
 use PhpTek\Sentry\Adaptor\SentryAdaptor;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\SimpleCache\CacheInterface;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Convert;
@@ -23,32 +25,22 @@ class PageControllerExtension extends Extension
 {
     const SLW_NOOP = 'Unavailable';
 
+    /**
+     * @return void
+     * @throws NotFoundExceptionInterface
+     */
     public function onAfterInit()
     {
         // Sentry
         $dsn = SentryAdaptor::get_opts();
-        if (!$dsn['dsn']) {
-            return;
+        if (!empty($dsn['dsn'])) {
+            $this->includeSentry($dsn['dsn']);
         }
-        $appData = $this->getAppdata();
-        $cache = Injector::inst()->get(CacheInterface::class . '.sentryconf');
-        if ($appData['commit'] !== self::SLW_NOOP && !$cache->has($appData['commit'])) {
-            $version = $this->getVersion($appData);
-            $data = [
-                'DSN'     => $dsn['dsn'],
-                'VERSION' => $version
-            ];
-            $rendered = $this->renderJS($data);
-            $cache->set($appData['commit'], $rendered);
-        } else {
-            $rendered = $cache->get($appData['commit']);
+        // Environment Awarenes
+        $isAware = EnvironmentAwareness::ShowEnvironmentNotice() && EnvironmentAwareness::EnvironmentLabel();
+        if ($isAware) {
+            $this->includeAwareCSS();
         }
-
-        Requirements::insertHeadTags(
-            $rendered,
-            'sentryconfig'
-        );
-        Requirements::javascript("pikselin/module-helpers:dist/js/main.js");
     }
 
     /**
@@ -84,7 +76,7 @@ class PageControllerExtension extends Extension
     /**
      * @return array
      */
-    public function getAppdata(): array
+    public static function getAppdata(): array
     {
         $meta = InstalledVersions::getRootPackage();
 
@@ -99,7 +91,7 @@ class PageControllerExtension extends Extension
      * @param array $appData
      * @return string
      */
-    public function getVersion(array $appData): string
+    private function getVersion(array $appData): string
     {
         // Start with the Env
         $version = Environment::getEnv('SS_RELEASE_VERSION');
@@ -110,7 +102,7 @@ class PageControllerExtension extends Extension
             if (file_exists($releaseFile) && filesize($releaseFile) >= 1) {
                 $version = @file_get_contents(Director::baseFolder() . '/.release');
                 // Some release files contain the commit hash with a +, we need to strip that out
-                if (strpos('+', $version) !== false) {
+                if (str_contains('+', $version)) {
                     $version = substr($version, 0, strpos($version, '+')-1);
                 }
             }
@@ -118,5 +110,53 @@ class PageControllerExtension extends Extension
 
         // Return a format like modulehelper@1.0.0+commithash
         return sprintf('%s@%s+%s', $appData['project'][1] ?? $appData['project'][0], trim($version), $appData['commit']);
+    }
+
+    /**
+     * @param string $dsn
+     * @return void
+     * @throws NotFoundExceptionInterface
+     */
+    private function includeSentry($dsn): void
+    {
+        $appData = static::getAppdata();
+        $cache = Injector::inst()->get(CacheInterface::class . '.sentryconf');
+        if ($appData['commit'] === self::SLW_NOOP || !$cache->has($appData['commit'])) {
+            $version = $this->getVersion($appData);
+            $data = [
+                'DSN'     => $dsn,
+                'VERSION' => $version
+            ];
+            $rendered = $this->renderJS($data);
+            $cache->set($appData['commit'], $rendered);
+        } else {
+            $rendered = $cache->get($appData['commit']);
+        }
+
+        Requirements::insertHeadTags(
+            $rendered,
+            'sentryconfig'
+        );
+        Requirements::javascript("pikselin/module-helpers:dist/js/main.js");
+    }
+
+    /**
+     * @return void
+     */
+    private function includeAwareCSS(): void
+    {
+        $env = EnvironmentAwareness::EnvironmentLabel();
+        $envColour = EnvironmentAwareness::EnvironmentColor();
+        Requirements::css(<<<CSS
+#BetterNavigatorStatus:after {
+    content: "$env";
+    background-color: $envColour;
+    padding: 0.35em .5em .2em;
+    margin: 0 .7em 0 .35em;
+    border-radius: 0.3em;
+    border: 1px solid #fff;
+}
+CSS
+        );
     }
 }
