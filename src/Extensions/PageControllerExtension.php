@@ -147,7 +147,7 @@ class PageControllerExtension extends Extension
     {
         $env = EnvironmentAwareness::EnvironmentLabel();
         $envColour = EnvironmentAwareness::EnvironmentColor();
-        Requirements::css(<<<CSS
+        Requirements::customCSS(<<<CSS
 #BetterNavigatorStatus:after {
     content: "$env";
     background-color: $envColour;
