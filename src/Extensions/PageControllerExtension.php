@@ -36,8 +36,8 @@ class PageControllerExtension extends Extension
         if (!empty($dsn['dsn'])) {
             $this->includeSentry($dsn['dsn']);
         }
-        // Environment Awarenes
-        $isAware = EnvironmentAwareness::ShowEnvironmentNotice() && EnvironmentAwareness::EnvironmentLabel();
+        // Environment Awarenes, always show in dev
+        $isAware = (EnvironmentAwareness::ShowEnvironmentNotice() || Director::isDev()) && EnvironmentAwareness::EnvironmentLabel();
         if ($isAware) {
             $this->includeAwareCSS();
         }
