@@ -1,5 +1,5 @@
 {
-    "name": "pikselin/module-helpers",
+    "name": "firesphere/module-helpers",
     "description": "A set of helpers for Sentry in JS etc.",
     "minimum-stability": "stable",
     "license": "proprietary",
@@ -13,7 +13,7 @@
         "silverstripe/recipe-cms": "^4|^5",
         "phptek/sentry": "^4|^5",
         "jonom/silverstripe-betternavigator": "^5|^6",
-        "jonom/silverstripe-environment-awareness": "^2"
+        "jonom/silverstripe-environment-awareness": "^2|^3"
     },
     "extra": {
         "expose": [
