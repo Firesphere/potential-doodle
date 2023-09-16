@@ -6,3 +6,4 @@ app
 .htaccess
 public
 composer.lock
+.ddev

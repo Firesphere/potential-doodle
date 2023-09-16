@@ -14,5 +14,11 @@
   "dependencies": {
     "@sentry/browser": "^7",
     "@sentry/tracing": "^7"
+  },
+  "license": "BSD-3-Clause",
+  "name": "module-helpers",
+  "author": {
+    "email": "simon@firesphere.dev",
+    "name": "Simon `Firesphere` Erkelens"
   }
 }
