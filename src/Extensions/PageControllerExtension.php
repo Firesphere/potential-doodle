@@ -1,6 +1,6 @@
 <?php
 
-namespace Pikselin\ModuleHelpers\Extensions;
+namespace Firesphere\ModuleHelpers\Extensions;
 
 use Composer\InstalledVersions;
 use JonoM\EnvironmentAwareness\EnvironmentAwareness;
@@ -17,7 +17,7 @@ use SilverStripe\Core\Manifest\ModuleResourceLoader;
 use SilverStripe\View\Requirements;
 
 /**
- * Class \Pikselin\ModuleHelpers\Extensions\PageControllerExtension
+ * Class \Firesphere\ModuleHelpers\Extensions\PageControllerExtension
  *
  * @property PageController|PageControllerExtension $owner
  */
@@ -53,7 +53,7 @@ class PageControllerExtension extends Extension
     private function renderJS($data)
     {
         $file = ModuleResourceLoader::singleton()
-            ->resolvePath("pikselin/module-helpers:templates/sentryconf.js");
+            ->resolvePath("firesphere/module-helpers:templates/sentryconf.js");
         $absolutePath = Director::getAbsFile($file);
         if (!file_exists($absolutePath ?? '')) {
             throw new \InvalidArgumentException("Javascript template file {$file} does not exist");
@@ -105,6 +105,8 @@ class PageControllerExtension extends Extension
                 if (str_contains('+', $version)) {
                     $version = substr($version, 0, strpos($version, '+')-1);
                 }
+            } else {
+                $version = '0-dev'; // Default to version 0 in Dev
             }
         }
 
@@ -137,7 +139,7 @@ class PageControllerExtension extends Extension
             $rendered,
             'sentryconfig'
         );
-        Requirements::javascript("pikselin/module-helpers:dist/js/main.js");
+        Requirements::javascript("firesphere/module-helpers:dist/js/main.js");
     }
 
     /**
