@@ -1,6 +1,7 @@
 {
     "name": "firesphere/module-helpers",
     "description": "A set of helpers for Sentry in JS etc.",
+    "type": "silverstripe-vendormodule",
     "minimum-stability": "stable",
     "license": "proprietary",
     "authors": [
